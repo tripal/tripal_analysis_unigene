@@ -70,21 +70,21 @@ function tripal_analysis_unigene_update_6001(){
 *
 */
 function tripal_analysis_unigene_add_cvterms(){
-   tripal_add_cvterms('unigene_version','The version number for the unigene ".
-     "(e.g. v1, v2, etc...) ');
-   tripal_add_cvterms('analysis_unigene_name', 'The name for a unigene.');
-   tripal_add_cvterms('analysis_unigene_num_contigs','The number of contigs in the unigene assembly');
-   tripal_add_cvterms('analysis_unigene_num_singlets','The number of singlets remaining in the unigene assembly');
-   tripal_add_cvterms('analysis_unigene_num_clusters','The number of clusters in the unigene assembly');
-   tripal_add_cvterms('analysis_unigene_num_reads','The number of reads, after filtering, used as input for the assembly');
-   tripal_add_cvterms('analysis_unigene_avg_length','The average contig length');
-   tripal_add_cvterms('singlet',"Indicates the feature is a singlet in a ".
+   tripal_cv_add_cvterm(array('name' => 'unigene_version','def' => 'The version number for the unigene ".
+     "(e.g. v1, v2, etc...) '),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_name', 'def' => 'The name for a unigene.'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_num_contigs', 'def' => 'The number of contigs in the unigene assembly'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_num_singlets', 'def' => 'The number of singlets remaining in the unigene assembly'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_num_clusters', 'def' => 'The number of clusters in the unigene assembly'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_num_reads', 'def' => 'The number of reads, after filtering, used as input for the assembly'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_avg_length', 'def' => 'The average contig length'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'singlet', 'def' => "Indicates the feature is a singlet in a ".
      "specific unigene version (e.g. v1, v2, etc...). The value specified ".
-     "should match that of the unigene_version");
+     "should match that of the unigene_version"),'tripal',0,1,'tripal');
 
    // Add cveterm 'analysis_unigene_settings' for inserting into analysisprop table   
-   tripal_add_cvterms('analysis_unigene_settings', 'Settings of a unigene analysis');
-   tripal_add_cvterms('singlet_in_analysis', 'Label the feature as a singlet of specified analysis. The value is the name of a unigene analysis. More importantly, the analysis_id of said analysis is inserted to the featureprop table as rank');
+   tripal_cv_add_cvterm(array('name' => 'analysis_unigene_settings', 'def' => 'Settings of a unigene analysis'),'tripal',0,1,'tripal');
+   tripal_cv_add_cvterm(array('name' => 'singlet_in_analysis', 'def' => 'Label the feature as a singlet of specified analysis. The value is the name of a unigene analysis. More importantly, the analysis_id of said analysis is inserted to the featureprop table as rank'),'tripal',0,1,'tripal');
 }
 /**
 *
@@ -203,8 +203,8 @@ function tripal_analysis_unigene_add_stat_mview() {
 	 
 	$index = "analysis_id";
 	 
-	$ana_type = tripal_get_cvterm_id('analysis_type');
-	$singlet_type_id = tripal_get_cvterm_id('singlet_in_analysis');
+	$ana_type = tripal_cv_get_cvterm_by_name('analysis_type');
+	$singlet_type_id = tripal_cv_get_cvterm_by_name('singlet_in_analysis');
 	$contig_type = db_result(chado_query("SELECT cvterm_id FROM {cvterm} WHERE name = 'contig' AND cv_id = (SELECT cv_id FROM {cv} WHERE name = 'sequence')")); //P.S. 'contig' is not a tripal term
 	$EST_type = db_result(chado_query("SELECT cvterm_id FROM {cvterm} WHERE name = 'EST' AND cv_id = (SELECT cv_id FROM {cv} WHERE name = 'sequence')")); //P.S. 'EST' is not a tripal term
 	$sql = "SELECT
@@ -234,8 +234,8 @@ function tripal_analysis_unigene_add_stat_mview() {
 						         			INNER JOIN analysisfeature AF ON F.feature_id = AF.feature_id
 												LEFT JOIN featureprop FP on F.feature_id = FP.feature_id
             								WHERE F.type_id = $contig_type
-            								AND ((FP.type_id = $singlet_type_id AND FP.rank != AF.analysis_id) OR FP.type_id IS NULL)
-												OR (FP.type_id = $singlet_type_id AND FP.rank = AF.analysis_id)
+            								AND ((FP.type_id = ".$singlet_type_id->cvterm_id." AND FP.rank != AF.analysis_id) OR FP.type_id IS NULL)
+												OR (FP.type_id = ".$singlet_type_id->cvterm_id." AND FP.rank = AF.analysis_id)
 												GROUP BY analysis_id) Unigene ON Unigene.analysis_id = A.analysis_id
 			
 					LEFT JOIN (SELECT count (F.feature_id) AS contig_no, 
@@ -247,7 +247,7 @@ function tripal_analysis_unigene_add_stat_mview() {
          								INNER JOIN analysisfeature AF ON F.feature_id = AF.feature_id
 											LEFT JOIN featureprop FP on F.feature_id = FP.feature_id
             							WHERE F.type_id = $contig_type
-            							AND ((FP.type_id = $singlet_type_id AND FP.rank != AF.analysis_id) OR FP.type_id IS NULL)
+            							AND ((FP.type_id = ".$singlet_type_id->cvterm_id." AND FP.rank != AF.analysis_id) OR FP.type_id IS NULL)
 											GROUP BY analysis_id) Contig ON Contig.analysis_id = A.analysis_id
 
 					LEFT JOIN (SELECT count (F.feature_id) AS singlet_no, 
@@ -258,10 +258,10 @@ function tripal_analysis_unigene_add_stat_mview() {
 											FROM featureprop FP
 											INNER JOIN feature F ON F.feature_id = FP.feature_id
          								INNER JOIN analysisfeature AF ON FP.feature_id = AF.feature_id
-											WHERE FP.type_id = $singlet_type_id AND FP.rank = AF.analysis_id
+											WHERE FP.type_id = ".$singlet_type_id->cvterm_id." AND FP.rank = AF.analysis_id
 											GROUP BY analysis_id) Singlet ON Singlet.analysis_id = A.analysis_id			
 			
-					WHERE type_id = $ana_type AND value = 'tripal_analysis_unigene'";
+					WHERE type_id = ".$ana_type->cvterm_id." AND value = 'tripal_analysis_unigene'";
 	 
 	// Create the MView
 	tripal_add_mview(
