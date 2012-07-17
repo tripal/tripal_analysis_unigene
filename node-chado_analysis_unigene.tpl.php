@@ -37,7 +37,7 @@ $unigene_name = $analysis->tripal_analysis_unigene->unigene_name;
 ?>
 
 <?php if ($teaser) { 
-  include('tripal_analysis_unigene/tripal_analysis_unigene_teaser.tpl.php'); 
+	include(drupal_get_path('module' , 'tripal_analysis_unigene') . '/theme/tripal_analysis_unigene/tripal_analysis_unigene_teaser.tpl.php');
 } else { ?>
 
 <script type="text/javascript">
