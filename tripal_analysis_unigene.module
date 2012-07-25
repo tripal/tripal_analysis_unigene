@@ -412,13 +412,22 @@ function tripal_analysis_unigene_nodeapi(&$node, $op, $teaser, $page) {
 						'#weight' => 4,
                );
             } else {
-
+               // add content to the organism node
                if(strcmp($node->type,'chado_organism')==0){
-                  $node->content['tripal_organism_unigenes'] = array(
+                 // check if this organism has a unigene, if so then add the content
+                 $sql = "SELECT * FROM {organism_unigene_mview} ".
+                        "WHERE organism_id = %d ";
+                 $previous_db = tripal_db_set_active('chado');  // use chado database
+                 $results = db_fetch_object(db_query($sql,$organism->organism_id));
+                 tripal_db_set_active($previous_db);  // now use drupal database
+                 if($results){
+                    $node->content['tripal_organism_unigenes'] = array(
 					   	'#value' => theme('tripal_organism_unigenes', $node),
 						'#weight' => 4
-                  );
+                    );
+                  }
                }
+               // add content to the feature node
                if(strcmp($node->type,'chado_feature')==0){
                   $node->content['tripal_feature_unigenes'] = array(
 					   	'#value' => theme('tripal_feature_unigenes', $node),
