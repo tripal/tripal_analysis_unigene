@@ -37,7 +37,7 @@ $unigene_name = $analysis->tripal_analysis_unigene->unigene_name;
 ?>
 
 <?php if ($teaser) { 
-	include(drupal_get_path('module' , 'tripal_analysis_unigene') . '/theme/tripal_analysis_unigene/tripal_analysis_unigene_teaser.tpl.php');
+  print theme('tripal_analysis_unigene_teaser',$node); 
 } else { ?>
 
 <script type="text/javascript">
@@ -86,7 +86,17 @@ if (Drupal.jsEnabled) {
 <div id="tripal_analysis_unigene_details" class="tripal_details">
 
    <!-- Basic Details Theme -->
-   <?php include('theme/tripal_analysis_unigene/tripal_analysis_unigene_base.tpl.php'); ?>
+   <?php print theme('tripal_analysis_unigene_base',$node); ?>
+
+   <!-- Resource Blocks CCK elements --><?php
+   for($i = 0; $i < count($node->field_resource_titles); $i++){
+     if($node->field_resource_titles[$i]['value']){ ?>
+       <div id="tripal_analysis_resource_<?php print $i?>-box" class="tripal_analysis_unigene-info-box tripal-info-box">
+         <div class="tripal_analysis-info-box-title tripal-info-box-title"><?php print $node->field_resource_titles[$i]['value'] ?></div>
+         <?php print $node->field_resource_blocks[$i]['value']; ?>
+       </div><?php
+     }
+   }?>
 
    <?php print $content ?>
 </div>
@@ -96,7 +106,13 @@ if (Drupal.jsEnabled) {
    <div id="tripal_analysis_unigene_toc_title" class="tripal_toc_title">Resources</div>
    <span id="tripal_analysis_unigene_toc_desc" class="tripal_toc_desc"></span>
    <ul id="tripal_analysis_unigene_toc_list" class="tripal_toc_list">
-
+     <!-- Resource Links CCK elements --><?php
+     for($i = 0; $i < count($node->field_resource_links); $i++){
+       if($node->field_resource_links[$i]['value']){
+         $matches = preg_split("/\|/",$node->field_resource_links[$i]['value']);?>
+         <li><a href="<?php print $matches[1] ?>" target="_blank"><?php print $matches[0] ?></a></li><?php
+       }
+     }?>
    </ul>
 </div>
 
