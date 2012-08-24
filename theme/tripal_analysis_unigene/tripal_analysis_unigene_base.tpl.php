@@ -53,7 +53,7 @@ $unigene = $node->analysis->tripal_analysis_unigene;
         <td><?php print preg_replace("/^(\d+-\d+-\d+) .*/","$1",$analysis->timeexecuted); ?></td>
       </tr>
       <tr class="tripal_analysis_unigene-table-odd-row tripal-table-odd-row">
-        <th nowrap>Description</th>
+        <th nowrap>Materials & Methods</th>
         <td><?php print $analysis->description; ?></td>
       </tr> 
       <tr class="tripal_analysis_unigene-table-even-row tripal-table-even-row">
