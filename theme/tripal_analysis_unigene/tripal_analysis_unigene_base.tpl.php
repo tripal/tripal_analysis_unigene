@@ -25,7 +25,7 @@ $unigene = $node->analysis->tripal_analysis_unigene;
         <th nowrap>Software</th>
         <td><?php 
           print $analysis->program; 
-          if ($analysis->programversion and $analysis->programversion != 'n/a')) {
+          if ($analysis->programversion and $analysis->programversion != 'n/a') {
              print " (" . $analysis->programversion . ")"; 
           }
           if($analysis->algorithm){
