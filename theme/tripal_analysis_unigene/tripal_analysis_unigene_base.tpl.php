@@ -55,32 +55,34 @@ $unigene = $node->analysis->tripal_analysis_unigene;
       <tr class="tripal_analysis_unigene-table-odd-row tripal-table-odd-row">
         <th nowrap>Materials & Methods</th>
         <td><?php print $analysis->description; ?></td>
-      </tr> 
-      <tr class="tripal_analysis_unigene-table-even-row tripal-table-even-row">
-        <th nowrap>Stats</th>
-        <td>
-             <?php if($unigene->num_reads){print "Number of reads: $unigene->num_reads<br>";} ?>
-             <?php if($unigene->num_clusters){print "Number of clusters: $unigene->num_clusters<br>";} ?>
-             <?php if($unigene->num_contigs){print "Number of contigs: $unigene->num_contigs<br>";} ?>
-             <?php if($unigene->num_singlets){print "Number of singlets: $unigene->num_singlets<br>";} ?>
-        </td>
-      </tr>  
-      <tr class="tripal_analysis_unigene-table-odd-row tripal-table-odd-row">
-        <th>Organisms</th>
-        <td><?php 
-            if($unigene->organisms and is_array($unigene->organisms)){
-               foreach($unigene->organisms as $organism){
-                  if($organism->nid){
-                     print "<i><a href=\"".url("node/$organism->nid")."\">$organism->genus $organism->species</i></a><br>";
-                  } else {
-                     print "<i>$organism->genus $organism->species</i><br>";
-                  }
-               }
-            } else {
-                // add message here with instructions for administrators to make this work.
-            }
-            ?>
-        </td>
-      </tr>       	                                
+      </tr><?php 
+      if ($unigene->num_reads or
+          $unigene->num_clusters or 
+          $unigene->num_contigs or
+          $unigene->num_singlets) { ?>
+	      <tr class="tripal_analysis_unigene-table-even-row tripal-table-even-row">
+	        <th nowrap>Stats</th>
+	        <td>
+	             <?php if($unigene->num_reads){print "Number of reads: $unigene->num_reads<br>";} ?>
+	             <?php if($unigene->num_clusters){print "Number of clusters: $unigene->num_clusters<br>";} ?>
+	             <?php if($unigene->num_contigs){print "Number of contigs: $unigene->num_contigs<br>";} ?>
+	             <?php if($unigene->num_singlets){print "Number of singlets: $unigene->num_singlets<br>";} ?>
+	        </td>
+	      </tr><?php 
+      }
+      if ($unigene->organisms and is_array($unigene->organisms)) { ?>
+	      <tr class="tripal_analysis_unigene-table-odd-row tripal-table-odd-row">
+	        <th>Organisms</th>
+	        <td><?php             
+	           foreach($unigene->organisms as $organism){
+	             if($organism->nid){
+	               print "<i><a href=\"".url("node/$organism->nid")."\">$organism->genus $organism->species</i></a><br>";
+	             } else {
+	               print "<i>$organism->genus $organism->species</i><br>";
+	             }
+	           }?>
+	        </td>
+	      </tr> <?php
+      } ?>      	                                
    </table>   
 </div>
