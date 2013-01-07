@@ -91,7 +91,7 @@ if (Drupal.jsEnabled) {
    <!-- Resource Blocks CCK elements --><?php
    for($i = 0; $i < count($node->field_resource_titles); $i++){
      if($node->field_resource_titles[$i]['value']){ ?>
-       <div id="tripal_analysis_resource_<?php print $i?>-box" class="tripal_analysis_unigene-info-box tripal-info-box">
+       <div id="tripal_analysis_unigene-resource_<?php print $i?>-box" class="tripal_analysis_unigene-info-box tripal-info-box">
          <div class="tripal_analysis-info-box-title tripal-info-box-title"><?php print $node->field_resource_titles[$i]['value'] ?></div>
          <?php print $node->field_resource_blocks[$i]['value']; ?>
        </div><?php
