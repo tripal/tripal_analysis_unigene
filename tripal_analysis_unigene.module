@@ -250,30 +250,45 @@ function chado_analysis_unigene_validate($node, &$form) {
 *
 */
 function chado_analysis_unigene_insert($node) {
-   // insert the analysis
-   chado_analysis_insert($node);
-
-   // add the unigene name as a property of the anslysis
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_type', 'tripal_analysis_unigene');  
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_name', $node->unigene_name);  
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_contigs', $node->num_contigs);  
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_reads', $node->num_reads);  
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_avg_length', $node->avg_length);
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_clusters', $node->num_clusters);  
-   tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_singlets', $node->num_clusters);  
+   
+  // get the analysis_id from the node before the call below
+  $analysis_id = $node->analysis_id;
+  
+  // insert the analysis. If the analysis already exist then this
+  // call will link it to a new Drupa node.
+  chado_analysis_insert($node);
+  
+  // If this analysis already exists then don't recreate it in chado. This can happen
+  // when nodes are synced.  They already exist but Drupal doesn't know it and calls 
+  // this function.
+  if (!$analysis_id) {   
+    // add the unigene name as a property of the anslysis
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_type', 'tripal_analysis_unigene');  
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_name', $node->unigene_name);  
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_contigs', $node->num_contigs);  
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_reads', $node->num_reads);  
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_avg_length', $node->avg_length);
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_clusters', $node->num_clusters);  
+    tripal_analysis_insert_property($node->analysis_id, 'analysis_unigene_num_singlets', $node->num_clusters);
+  }   
 }
 /**
 *
 */
 function chado_analysis_unigene_update($node) {
-   chado_analysis_update($node); 
-
-   tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_name', $node->unigene_name, 1);
-   tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_contigs', $node->num_contigs, 1);
-   tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_reads', $node->num_reads, 1);
-   tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_avg_length', $node->avg_length, 1);
-   tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_clusters', $node->num_clusters, 1);
-   tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_singlets', $node->num_singlets, 1);   
+  if ($node->revision) {
+    // there is no way to handle revisions in Chado but leave
+    // this here just to make not we've addressed it.
+  }
+  
+  chado_analysis_update($node); 
+  
+  tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_name', $node->unigene_name, 1);
+  tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_contigs', $node->num_contigs, 1);
+  tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_reads', $node->num_reads, 1);
+  tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_avg_length', $node->avg_length, 1);
+  tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_clusters', $node->num_clusters, 1);
+  tripal_analysis_update_property($node->analysis_id, 'analysis_unigene_num_singlets', $node->num_singlets, 1);   
 }
 /**
 *
