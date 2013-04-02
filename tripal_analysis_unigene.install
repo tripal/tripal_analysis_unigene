@@ -111,7 +111,7 @@ function tripal_analysis_unigene_add_organism_unigene_mview() {
       'analysis_id, organism_id',
       // SQL statement to populate the view
      "SELECT DISTINCT A.analysis_id, O.organism_id ".
-      "FROM {Analysis} A ".
+      "FROM Analysis A ".
       "  INNER JOIN analysisprop AP    ON AP.analysis_id = A.analysis_id ".
       "  INNER JOIN cvterm CVT         ON AP.type_id = CVT.cvterm_id ".
       "  INNER JOIN cv CV              ON CV.cv_id = CVT.cv_id ".

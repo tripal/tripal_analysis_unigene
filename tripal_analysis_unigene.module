@@ -789,8 +789,8 @@ function tripal_analysis_unigene_get_alignments($map) {
           "  FL.phase, CVT.name as cvname, F.feature_id, F.uniquename, ".
           "  FL.featureloc_id ".
           "FROM {featureloc} FL ".
-          "  INNER JOIN Feature F ON F.feature_id = FL.feature_id ".
-          "  INNER JOIN Cvterm CVT ON CVT.cvterm_id = F.type_id ".
+          "  INNER JOIN {Feature} F ON F.feature_id = FL.feature_id ".
+          "  INNER JOIN {Cvterm} CVT ON CVT.cvterm_id = F.type_id ".
           "WHERE srcfeature_id = %d AND ".
           "  NOT(CVT.name = 'match' or CVT.name = 'match_part') ".
           "ORDER BY FL.fmin, FL.fmax";
@@ -817,7 +817,7 @@ function tripal_analysis_unigene_get_alignments($map) {
     // get the feature properties
     $sql = "SELECT FP.value,FP.rank,CVT.name,CVT.definition ".
     "FROM {featureprop} FP".
-    "  INNER JOIN Cvterm CVT ".
+    "  INNER JOIN {Cvterm} CVT ".
     "    ON FP.type_id = CVT.cvterm_id ".
     "WHERE feature_id = %d";
     $results = db_query($sql, $map->feature_id);
