@@ -336,9 +336,7 @@ function chado_analysis_unigene_load($node) {
           "  INNER JOIN {organism} O on OUM.organism_id = O.organism_id ".
           "WHERE OUM.analysis_id = %d ".
           "ORDER BY O.genus, O.species";
-   $previous_db = tripal_db_set_active('chado');  // use chado database
-   $organisms = db_query($sql, $analysis_id);
-   tripal_db_set_active($previous_db);  // now use drupal database
+   $organisms = chado_query($sql, $analysis_id);
 
    while ($organism = db_fetch_object($organisms)) {
       $sql = "SELECT nid FROM {chado_organism} WHERE organism_id = %d";
@@ -434,9 +432,7 @@ function tripal_analysis_unigene_nodeapi(&$node, $op, $teaser, $page) {
                  // check if this organism has a unigene, if so then add the content
                  $sql = "SELECT * FROM {organism_unigene_mview} ".
                         "WHERE organism_id = %d ";
-                 $previous_db = tripal_db_set_active('chado');  // use chado database
-                 $results = db_fetch_object(db_query($sql, $organism->organism_id));
-                 tripal_db_set_active($previous_db);  // now use drupal database
+                 $results = db_fetch_object(chado_query($sql, $organism->organism_id));
                  if ($results) {
                     $node->content['tripal_organism_unigenes'] = array(
                '#value' => theme('tripal_organism_unigenes', $node),
@@ -536,11 +532,9 @@ function theme_tripal_analysis_unigene_search_index($node) {
                    "FROM {featureloc} ".
                    "WHERE feature_id = $result->feature_id ".
                    "ORDER BY rank";
-            $previous_db = tripal_db_set_active('chado');
-            $contig_fid = db_result(db_query($sql));
+            $contig_fid = db_result(chado_query($sql));
             $sql = "SELECT name FROM {feature} WHERE feature_id = %d";
-            $contig_name = db_result(db_query($sql, $contig_fid));
-            tripal_db_set_active($previous_db);
+            $contig_name = db_result(chado_query($sql, $contig_fid));
             $sql = "SELECT nid ".
                    "FROM {chado_feature} ".
                    "WHERE feature_id = %d";
@@ -596,11 +590,9 @@ function theme_tripal_analysis_unigene_search_result($node) {
                    "FROM {featureloc} ".
                    "WHERE feature_id = $result->feature_id ".
                    "ORDER BY rank";
-            $previous_db = tripal_db_set_active('chado');
-            $contig_fid = db_result(db_query($sql));
+            $contig_fid = db_result(chado_query($sql));
             $sql = "SELECT name FROM {feature} WHERE feature_id = %d";
-            $contig_name = db_result(db_query($sql, $contig_fid));
-            tripal_db_set_active($previous_db);
+            $contig_name = db_result(chado_query($sql, $contig_fid));
             $sql = "SELECT nid ".
                    "FROM {chado_feature} ".
                    "WHERE feature_id = %d";
@@ -676,11 +668,9 @@ function theme_tripal_analysis_unigene_feature_alignments($node) {
                    "FROM {featureloc} ".
                    "WHERE feature_id = $result->feature_id ".
                    "ORDER BY rank";
-            $previous_db = tripal_db_set_active('chado');
-            $contig_fid = db_result(db_query($sql));
+            $contig_fid = db_result(chado_query($sql));
             $sql = "SELECT name FROM {feature} WHERE feature_id = %d";
-            $contig_name = db_result(db_query($sql, $contig_fid));
-            tripal_db_set_active($previous_db);
+            $contig_name = db_result(chado_query($sql, $contig_fid));
             $sql = "SELECT nid ".
                    "FROM {chado_feature} ".
                    "WHERE feature_id = $contig_fid";
@@ -794,41 +784,14 @@ function tripal_analysis_unigene_get_alignments($map) {
           "WHERE srcfeature_id = %d AND ".
           "  NOT(CVT.name = 'match' or CVT.name = 'match_part') ".
           "ORDER BY FL.fmin, FL.fmax";
-   $previous_db = tripal_db_set_active('chado');
-   $results = db_query($sql, $map->feature_id);
+   $results = chado_query($sql, $map->feature_id);
    $alignments = array();
    $i=0;
    while ($subfeature = db_fetch_object($results)) {
       $alignments[$i++] = $subfeature;
    }
    $additions->alignments = $alignments;
-
-   /* get the GO Terms
-    $sql = "SELECT DISTINCT * FROM {go_results_mview} ".
-    "WHERE feature_id = %d";
-    $results = db_query($sql, $map->feature_id);
-    $go_terms = array();
-    $i=0;
-    while ($term = db_fetch_object($results)) {
-    $go_terms[$i++] = $term;
-    }
-    $additions->go_terms = $go_terms;
-
-    // get the feature properties
-    $sql = "SELECT FP.value,FP.rank,CVT.name,CVT.definition ".
-    "FROM {featureprop} FP".
-    "  INNER JOIN {Cvterm} CVT ".
-    "    ON FP.type_id = CVT.cvterm_id ".
-    "WHERE feature_id = %d";
-    $results = db_query($sql, $map->feature_id);
-    $properties = array();
-    $i=0;
-    while ($property = db_fetch_object($results)) {
-    $properties[$i++] = $property;
-    }
-    $additions->properties = $properties;
-    */
-   tripal_db_set_active($previous_db);
+   
    return $additions;
 }
 /************************************************************************
@@ -841,9 +804,7 @@ function tripal_analysis_unigene_load_organism_unigenes($organism) {
           "  INNER JOIN {analysis} A  ON A.analysis_id = OUM.analysis_id ".
           "WHERE OUM.organism_id = %d ".
           "ORDER BY A.timeexecuted DESC";
-   $previous_db = tripal_db_set_active('chado');  // use chado database
-   $results = db_query($sql, $organism->organism_id);
-   tripal_db_set_active($previous_db);  // now use drupal database
+   $results = chado_query($sql, $organism->organism_id);
 
    $unigenes = array();
    $i=0;
@@ -881,9 +842,7 @@ function tripal_analysis_unigene_load_feature_unigenes($feature) {
           "  INNER JOIN {analysis} A  ON A.analysis_id = OUM.analysis_id ".
           "WHERE OUM.organism_id = %d ".
           "ORDER BY A.timeexecuted DESC";
-   $previous_db = tripal_db_set_active('chado');  // use chado database
-   $results = db_query($sql, $feature->organism_id->organism_id);
-   tripal_db_set_active($previous_db);  // now use drupal database
+   $results = chado_query($sql, $feature->organism_id->organism_id);
 
    // iterate through the unigenes and find those that use this feature
    $unigenes = array();
