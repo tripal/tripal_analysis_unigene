@@ -65,64 +65,63 @@ function chado_analysis_unigene_access($op, $node, $account) {
 /**
 *
 */
-function chado_analysis_unigene_form($node) {
+function chado_analysis_unigene_form($node, $form_state) {  
 
-   $unigene = $node->analysis->tripal_analysis_unigene;
+  // add in the default fields for an analysis
+  $form = chado_analysis_form($node, $form_state);
 
-   // set the form defaults
-   $unigene_name = $node->unigene_name;
-   if (!$unigene_name) {
-      $unigene_name = $unigene->unigene_name;
-   }
-   $num_reads = $node->num_reads;
-   if (!$num_reads) {
-      $num_reads = $unigene->num_reads;
-   }
-   $avg_length = $node->avg_length;
-   if (!$avg_length) {
-      $avg_length = $unigene->avg_length;
-   }
-   $num_clusters = $node->num_clusters;
-   if (!$num_clusters) {
-      $num_clusters = $unigene->num_clusters;
-   }
-   $num_contigs = $node->num_contigs;
-   if (!$num_contigs) {
-      $num_contigs = $unigene->num_contigs;
-   }
-   $num_singlets = $node->num_singlets;
-   if (!$num_singlets) {
-      $num_singlets = $unigene->num_singlets;
-   }
-   $contig_min_len= $node->contig_min_len;
-   if (!$contig_min_len) {
-      $contig_min_len = $unigene->contig_min_len;
-   }
-   $contig_max_len= $node->contig_max_len;
-   if (!$contig_max_len) {
-      $contig_max_len = $unigene->contig_max_len;
-   }
-   $contig_avg_len= $node->contig_avg_len;
-   if (!$contig_avg_len) {
-      $contig_avg_len = $unigene->contig_avg_len;
-   }
-   $singlet_min_len= $node->singlet_min_len;
-   if (!$singlet_min_len) {
-      $singlet_min_len = $unigene->singlet_min_len;
-   }
-   $singlet_max_len= $node->singlet_max_len;
-   if (!$singlet_max_len) {
-      $singlet_max_len = $unigene->singlet_max_len;
-   }
-   $singlet_avg_len= $node->singlet_avg_len;
-   if (!$singlet_avg_len) {
-      $singlet_avg_len = $unigene->singlet_avg_len;
-   }
-
-
-   // add in the default fields for an analysis
-   $form = chado_analysis_form($node);
-
+  $unigene = $node->analysis->tripal_analysis_unigene;
+  
+  // set the form defaults
+  $unigene_name = $node->unigene_name;
+  if (!$unigene_name) {
+    $unigene_name = $unigene->unigene_name;
+  }
+  $num_reads = $node->num_reads;
+  if (!$num_reads) {
+    $num_reads = $unigene->num_reads;
+  }
+  $avg_length = $node->avg_length;
+  if (!$avg_length) {
+    $avg_length = $unigene->avg_length;
+  }
+  $num_clusters = $node->num_clusters;
+  if (!$num_clusters) {
+    $num_clusters = $unigene->num_clusters;
+  }
+  $num_contigs = $node->num_contigs;
+  if (!$num_contigs) {
+    $num_contigs = $unigene->num_contigs;
+  }
+  $num_singlets = $node->num_singlets;
+  if (!$num_singlets) {
+    $num_singlets = $unigene->num_singlets;
+  }
+  $contig_min_len= $node->contig_min_len;
+  if (!$contig_min_len) {
+    $contig_min_len = $unigene->contig_min_len;
+  }
+  $contig_max_len= $node->contig_max_len;
+  if (!$contig_max_len) {
+    $contig_max_len = $unigene->contig_max_len;
+  }
+  $contig_avg_len= $node->contig_avg_len;
+  if (!$contig_avg_len) {
+    $contig_avg_len = $unigene->contig_avg_len;
+  }
+  $singlet_min_len= $node->singlet_min_len;
+  if (!$singlet_min_len) {
+    $singlet_min_len = $unigene->singlet_min_len;
+  }
+  $singlet_max_len= $node->singlet_max_len;
+  if (!$singlet_max_len) {
+    $singlet_max_len = $unigene->singlet_max_len;
+  }
+  $singlet_avg_len= $node->singlet_avg_len;
+  if (!$singlet_avg_len) {
+    $singlet_avg_len = $unigene->singlet_avg_len;
+  }
+  
   $form['unigene_name'] = array(
       '#title' => t('Unigene Name'),
       '#type' => 'textfield',
@@ -131,14 +130,12 @@ function chado_analysis_unigene_form($node) {
       '#default_value' => $unigene_name,
   );
 
-
   $form['unigene_stats'] = array(
       '#title' => t('Unigene Stats'),
       '#type' => 'fieldset',
       '#description' => t('Unigene, contig and singlet statistics'),
       '#collapsible' => TRUE,
   );
-
    
   $form['unigene_stats']['num_reads'] = array(
       '#title' => t('Number of Reads'),
@@ -469,24 +466,28 @@ function tripal_analysis_unigene_theme_registry_alter(&$info) {
  */
 function tripal_analysis_unigene_theme() {
   $path = drupal_get_path('module', 'tripal_analysis_unigene') . '/theme';
-   return array(
-      'tripal_analysis_unigene_search_index' => array(
-         'arguments' => array('node'),
-      ),
-      'tripal_analysis_unigene_search_result' => array(
-         'arguments' => array('node'),
-      ),
-      'tripal_organism_unigenes' => array(
-         'arguments' => array('node' => NULL),
-         'template' => 'tripal_organism_unigenes',
-         'path' => $path . '/tripal_organism',
-      ),
-      'tripal_analysis_unigene_base' => array(
-         'arguments' => array('node' => NULL),
-         'template' => 'tripal_analysis_unigene_base',
-         'path' => $path . '/tripal_analysis_unigene',
-      ),
-   );
+  
+  return array(
+    'tripal_analysis_unigene_search_index' => array(
+      'arguments' => array('node'),
+    ),
+    'tripal_analysis_unigene_search_result' => array(
+      'arguments' => array('node'),
+    ),
+    'tripal_organism_unigenes' => array(
+      'arguments' => array('node' => NULL),
+      'template' => 'tripal_organism_unigenes',
+      'path' => $path . '/tripal_organism',
+    ),
+    'tripal_analysis_unigene_base' => array(
+      'arguments' => array('node' => NULL),
+      'template' => 'tripal_analysis_unigene_base',
+      'path' => $path . '/tripal_analysis_unigene',
+    ),
+    'chado_analysis_unigene_node_form' => array(
+      'arguments' => array('form'),
+    ),      
+  );
 }
 
 /*******************************************************************************
