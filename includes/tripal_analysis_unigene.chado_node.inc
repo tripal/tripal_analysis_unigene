@@ -1,9 +1,36 @@
 <?php
 
-/*******************************************************************************
+/**
+ *  Implementation of hook_node_info();
+ */
+function tripal_analysis_unigene_node_info() {
+  $nodes = array();
+  $nodes['chado_analysis_unigene'] = array(
+    'name' => t('Analysis: Unigene'),
+    'base' => 'chado_analysis_unigene',
+    'description' => t('A unigene assembly constructed from transcriptomic reads.'),
+    'has_title' => FALSE,
+    'title_label' => t('Analysis: Unigene'),
+    'has_body' => FALSE,
+    'body_label' => t('Unigene Analysis Description'),
+    'locked' => TRUE,
+    'chado_node_api' => array(
+      'base_table' => 'analysis',
+      'hook_prefix' => 'chado_analysis_unigene',
+      'record_type_title' => array(
+        'singular' => t('Unigene Analysis'),
+        'plural' => t('Unigene Analyses')
+      ),
+      // this module will not sync.  that will be handled by the
+      // analysis module
+    )
+  );
+  return $nodes;
+}
+/*
  *  The following function proves access control for users trying to
-*  perform actions on data managed by this module
-*/
+ *  perform actions on data managed by this module
+ */
 function chado_analysis_unigene_access($op, $node, $account) {
   if ($op == 'create') {
     if (!user_access('create chado_analysis_unigene content', $account)) {
@@ -277,6 +304,9 @@ function chado_analysis_unigene_load($nodes) {
       $analysis->tripal_analysis_unigene->organisms [] = $organism;
     }
     
+    // Now get the title
+    $node->title = chado_get_node_title($node);
+    
     $nodes[$nid]->analysis = $analysis;
   }
 }
@@ -338,4 +368,13 @@ function tripal_analysis_unigene_node_view($node, $view_mode, $langcode) {
       }
       break;
   }
+}
+/**
+ * Implements [content_type]_chado_node_default_title_format().
+ *
+ * Defines a default title format for the Chado Node API to set the titles on
+ * Chado Analysis nodes based on chado fields.
+ */
+function chado_analysis_unigene_chado_node_default_title_format() {
+  return '[analysis.name]';
 }
