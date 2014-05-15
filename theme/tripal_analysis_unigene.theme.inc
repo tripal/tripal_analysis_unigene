@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php 
 
 
@@ -108,6 +107,3 @@ function theme_tripal_analysis_unigene_feature_alignments($node) {
   }
   return $content;
 }
-=======
-<?php
->>>>>>> 57494203bd03a9cad0a37d0b7a9455773c600d1e
