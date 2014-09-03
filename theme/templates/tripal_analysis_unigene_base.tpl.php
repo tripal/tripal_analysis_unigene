@@ -89,32 +89,47 @@ $rows[] = array(
 );
 
 // Unigene Stats row
-if ($unigene->num_reads or
-     $unigene->num_clusters or
-     $unigene->num_contigs or
-     $unigene->num_singlets) {
-  $stats = "";
-  if ($unigene->num_reads) {
-    $stats .= "Number of reads: $unigene->num_reads<br>";
-  }
-  if ($unigene->num_clusters) {
-    $stats .= "Number of clusters: $unigene->num_clusters<br>";
-  }
-  if ($unigene->num_contigs) {
-    $stats .= "Number of contigs: $unigene->num_contigs<br>";
-  }
-  if ($unigene->num_singlets) {
-    $stats .= "Number of singlets: $unigene->num_singlets<br>";
-  }  
+
+if ($unigene->num_reads) {
   $rows[] = array(
-      array(
-        'data' => 'Stats',
-        'header' => TRUE,
-        'width' => '20%' 
-      ),
-      $stats
+    array(
+      'data' => 'Number of Reads',
+      'header' => TRUE,
+      'width' => '20%',
+    ),
+    number_format($unigene->num_reads),
   );
 }
+if ($unigene->num_clusters) {
+  $rows[] = array(
+    array(
+      'data' => 'Number of Clusters',
+      'header' => TRUE,
+      'width' => '20%',
+    ),
+    number_format($unigene->num_clusters),
+  );
+}
+if ($unigene->num_contigs) {
+  $rows[] = array(
+    array(
+      'data' => 'Number of Contigs',
+      'header' => TRUE,
+      'width' => '20%',
+    ),
+    number_format($unigene->num_contigs),
+  );
+}
+if ($unigene->num_singlets) {
+  $rows[] = array(
+    array(
+      'data' => 'Number of Singlets',
+      'header' => TRUE,
+      'width' => '20%',
+    ),
+    number_format($unigene->num_singlets),
+  );
+}  
 
 // Unigene organism(s)
 if (property_exists($unigene, 'organisms') and is_array($unigene->organisms)) {

@@ -157,13 +157,6 @@ function tripal_analysis_unigene_add_organism_unigene_mview() {
   );
 
    tripal_add_mview($view_name, 'tripal_analysis_unigene', $schema, $sql, $comment);
-
-   // add a job to the job queue so this view gets updated automatically next
-   // time the job facility is run
-   $mview_id = tripal_get_mview_id($view_name);
-   if ($mview_id) {
-      tripal_delete_mview($mview_id);
-   }
 }
 /*******************************************************************************
  * Implementation of hook_uninstall().
