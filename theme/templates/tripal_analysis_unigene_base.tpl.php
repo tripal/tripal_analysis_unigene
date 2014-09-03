@@ -4,7 +4,7 @@ $node = $variables['node'];
 $analysis = $variables['node']->analysis;
 
 // the description is a text field so we want to expand that
-$analysis = tripal_core_expand_chado_vars($analysis,'field','analysis.description');
+$analysis = chado_expand_var($analysis,'field','analysis.description');
 
 // get the unigene data
 $unigene = $node->analysis->tripal_analysis_unigene; ?>
@@ -106,33 +106,34 @@ if ($unigene->num_reads or
   if ($unigene->num_singlets) {
     $stats .= "Number of singlets: $unigene->num_singlets<br>";
   }  
-  $rows [] = array (
-      array (
-          'data' => 'Stats',
-          'header' => TRUE,
-          'width' => '20%' 
+  $rows[] = array(
+      array(
+        'data' => 'Stats',
+        'header' => TRUE,
+        'width' => '20%' 
       ),
       $stats
   );
 }
 
 // Unigene organism(s)
-if (property_exists($unigene, 'organisms') and is_array ( $unigene->organisms )) {
+if (property_exists($unigene, 'organisms') and is_array($unigene->organisms)) {
   $orgs = "";
-  foreach ( $unigene->organisms as $organism ) {
+  foreach ($unigene->organisms as $organism) {
     if ($organism->nid) {
       $orgs .= "<i><a href=\"" . url ( "node/$organism->nid" ) . "\">$organism->genus $organism->species</i></a><br>";
-    } else {
+    } 
+    else {
       $orgs .= "<i>$organism->genus $organism->species</i><br>";
     }
   }
-  $rows [] = array (
-      array (
-          'data' => 'Organisms',
-          'header' => TRUE,
-          'width' => '20%'
-      ),
-      $orgs
+  $rows [] = array(
+    array(
+      'data' => 'Organisms',
+      'header' => TRUE,
+      'width' => '20%'
+    ),
+    $orgs
   );
 }
 
@@ -171,7 +172,6 @@ $table = array(
 // function to generate the table.
 print theme_table($table);
 if (property_exists($analysis, 'description')) { ?>
-<div style="text-align: justify"><?php print $analysis->description; ?></div>
-<?php  
+  <div style="text-align: justify"><?php print $analysis->description; ?></div><?php  
 } ?>
 

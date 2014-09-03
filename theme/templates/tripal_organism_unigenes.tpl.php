@@ -13,19 +13,28 @@ if(count($unigenes) > 0){ ?>
   foreach ($unigenes AS $unigene) {
     $unigene_name = '';
     if($unigene->nid){
-      $unigene_name .= "<a href=\"".url("node/$unigene->nid")."\">$unigene->unigene_name</a>";
-    } else {
+      $unigene_name .= "<a href=\"" . url("node/$unigene->nid") . "\">$unigene->unigene_name</a>";
+    } 
+    else {
       $unigene_name .= $unigene->unigene_name;
     }
     $stats = '';
-    if($unigene->num_reads){$stats .= "Reads: $unigene->num_reads<br>";}
-    if($unigene->num_clusters){$stats .= "Clusters: $unigene->num_clusters<br>";}
-    if($unigene->num_contigs){$stats .= "Contigs: $unigene->num_contigs<br>";}
-    if($unigene->num_singlets){$stats .= "Singlets: $unigene->num_singlets<br>";}
+    if ($unigene->num_reads) {
+      $stats .= "Reads: $unigene->num_reads<br>";
+    }
+    if ($unigene->num_clusters) {
+      $stats .= "Clusters: $unigene->num_clusters<br>";
+    }
+    if ($unigene->num_contigs) {
+      $stats .= "Contigs: $unigene->num_contigs<br>";
+    }
+    if ($unigene->num_singlets) {
+      $stats .= "Singlets: $unigene->num_singlets<br>";
+    }
     $rows[] = array(
       $unigene_name,
       $unigene->name,
-      preg_replace("/^(\d+-\d+-\d+) .*/","$1",$unigene->timeexecuted),
+      preg_replace("/^(\d+-\d+-\d+) .*/", "$1", $unigene->timeexecuted),
       $stats
     );
 
@@ -38,7 +47,7 @@ if(count($unigenes) > 0){ ?>
     'header' => $headers,
     'rows' => $rows,
     'attributes' => array(
-        'id' => 'tripal_feature_unigene-table',
+      'id' => 'tripal_feature_unigene-table',
     ),
     'sticky' => FALSE,
     'caption' => '',
@@ -49,6 +58,5 @@ if(count($unigenes) > 0){ ?>
   // function to generate the table.
   print theme_table($table);
 
-} else { ?>
-    <div class="tripal-no-results">There are no unigenes for this organism</div><?php }?>
+}
 

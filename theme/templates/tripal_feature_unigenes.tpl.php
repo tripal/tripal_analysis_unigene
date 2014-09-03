@@ -4,8 +4,7 @@ $feature = $node->feature;
 $unigenes = $feature->tripal_analysis_unigene->unigenes;
 
 // if this feature has a unigene then we want to show the box
-if($unigenes){
-?>
+if($unigenes){ ?>
 
   <div class="tripal_feature-info-box-desc tripal-info-box-desc">This <?php print $feature->type_id->name ?> is part of the following unigenes:</div><?php 
 
@@ -14,20 +13,23 @@ if($unigenes){
   foreach ($unigenes AS $unigene) {
     $unigene_name = '';
     if($unigene->nid){
-      $unigene_name .= "<a href=\"".url("node/$unigene->nid")."\">$unigene->unigene_name</a>";
-    } else {
+      $unigene_name .= "<a href=\"" . url("node/$unigene->nid") . "\">$unigene->unigene_name</a>";
+    } 
+    else {
       $unigene_name .= $unigene->unigene_name;
     }
     $analysis = '';
     if($unigene->nid){
-    	$analysis .= "<a href=\"".url("node/$unigene->nid")."\">$unigene->name</a>";
-    } else {
-    	$analysis .= $unigene->name;
+      $analysis .= "<a href=\"" . url("node/$unigene->nid") . "\">$unigene->name</a>";
+    } 
+    else {
+      $analysis .= $unigene->name;
     }
     $type = '';
     if(property_exists($unigene, 'singlet')){
       $type .= "Singlet";
-    } else {
+    } 
+    else {
       $type .= $feature->type_id->name;
     }
     $rows[] = array(
@@ -44,7 +46,7 @@ if($unigenes){
     'header' => $headers,
     'rows' => $rows,
     'attributes' => array(
-        'id' => 'tripal_feature_unigene-table',
+      'id' => 'tripal_feature_unigene-table',
     ),
     'sticky' => FALSE,
     'caption' => '',
@@ -53,6 +55,4 @@ if($unigenes){
   );
   print theme_table($table);
 
-} else { ?>
-    <div class="tripal-no-results">There are no unigenes for this feature</div><?php
-}?>
+}
