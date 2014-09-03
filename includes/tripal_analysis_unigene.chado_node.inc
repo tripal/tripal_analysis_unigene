@@ -384,6 +384,9 @@ function tripal_analysis_unigene_node_insert($node) {
 
       // Now get the title
       $node->title = chado_get_node_title($node);
+      
+      // Now use the API to set the path.
+      chado_set_node_url($node);
 
       break;
   }

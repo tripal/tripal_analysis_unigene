@@ -158,19 +158,16 @@ function tripal_analysis_unigene_add_organism_unigene_mview() {
 
    tripal_add_mview($view_name, 'tripal_analysis_unigene', $schema, $sql, $comment);
 }
-/*******************************************************************************
+/**
  * Implementation of hook_uninstall().
  */
 function tripal_analysis_unigene_uninstall() {
+   // Remove materialized views
    $mview = tripal_get_mview_id('organism_unigene_mview');
    if ($mview) {
       tripal_delete_mview($mview_id);
    }
-   // Delete the settings from {tripal_analysis} table
-   // Drupal complains when the user tries to uninstall tripal_analysis 
-   // and tripal_analysis_unigene at the same time. This is because Drupal drops
-   // the {tripal_analysis} table before we can delete anything from it. Thus,
-   // we perform a db_table_exists() check before the deletion
+   // Unregister the child analysis.
    tripal_unregister_analysis_child('tripal_analysis_unigene');
 
    // Delete module's variables from variables table.
@@ -179,14 +176,14 @@ function tripal_analysis_unigene_uninstall() {
    
 }
 
-/*******************************************************************************
+/**
  * Implementation of hook_requirements(). Make sure 'Tripal Core' and 'Tripal
  * Analysis' are enabled before installation
  */
 function tripal_analysis_unigene_requirements($phase) {
    $requirements = array();
    if ($phase == 'install') {
-      if (!function_exists('tripal_create_moddir') || !function_exists('tripal_analysis_register_child')) {
+      if (!function_exists('tripal_create_moddir') || !function_exists('tripal_register_analysis_child')) {
          $requirements ['tripal_analysis_unigene'] = array(
             'title' => "tripal_analysis_unigene",
             'value' => "error. Some required modules are just being installed. Please try again.",
