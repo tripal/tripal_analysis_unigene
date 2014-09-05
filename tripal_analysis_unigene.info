@@ -1,8 +1,7 @@
-; $Id:
 name = Tripal Unigene
 description = An analysis sub-module for displaying unigene analysis results.
 core = 7.x
-version = 7.x-2.x-tripal_v2.x
+version = 7.x-2.0-rc1
 project = tripal_analysis_unigene
 package = Tripal Extensions
 dependencies[] = tripal_core
