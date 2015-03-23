@@ -97,7 +97,7 @@ if ($unigene->num_reads) {
       'header' => TRUE,
       'width' => '20%',
     ),
-    number_format($unigene->num_reads),
+    is_numeric($unigene->num_reads) ? number_format($unigene->num_reads): '',
   );
 }
 if ($unigene->num_clusters) {
@@ -107,7 +107,7 @@ if ($unigene->num_clusters) {
       'header' => TRUE,
       'width' => '20%',
     ),
-    number_format($unigene->num_clusters),
+    is_numeric($unigene->num_clusters) ? number_format($unigene->num_clusters): '',
   );
 }
 if ($unigene->num_contigs) {
@@ -117,7 +117,7 @@ if ($unigene->num_contigs) {
       'header' => TRUE,
       'width' => '20%',
     ),
-    number_format($unigene->num_contigs),
+    is_numeric($unigene->num_contigs) ? number_format($unigene->num_contigs) : '',
   );
 }
 if ($unigene->num_singlets) {
@@ -127,7 +127,7 @@ if ($unigene->num_singlets) {
       'header' => TRUE,
       'width' => '20%',
     ),
-    number_format($unigene->num_singlets),
+    is_numeric($unigene->num_singlets) ? number_format($unigene->num_singlets) : '',
   );
 }  
 
