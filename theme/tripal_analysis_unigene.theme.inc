@@ -73,18 +73,18 @@ function tripal_analysis_unigene_preprocess_tripal_feature_unigenes(&$variables)
       'feature_id' => $feature->feature_id,
       'analysis_id' => $analysis_id,
     );
-    $hasFeature = tripal_core_chado_select('analysisfeature', array('*'), $values);
+    $analysisfeature = chado_select_record('analysisfeature', array('*'), $values);
 
     // if the feature is present then get information about it
-    if (sizeof($hasFeature) > 0) {
+    if (sizeof($analysisfeature) > 0) {
       // see if there is a drupal node for this unigene
       $c_node = db_query($sql, array(':analysis_id' => $analysis_id))->fetchObject();
       if ($c_node) {
         $unigene->nid = $c_node->nid;
       }
       // add in the properties
-      $unigene_name = tripal_analysis_get_property($analysis_id, 'analysis_unigene_name');
-      $singlet = tripal_core_get_property('analysisfeature', $analysis_id, 'singlet', 'tripal');
+      $unigene_name = chado_get_property(array('table' => 'analysis', 'id' => $analysis_id), array('type_name' => 'analysis_unigene_name', 'cv_name' => 'tripal'));
+      $singlet = chado_get_property(array('table' => 'analysisfeature', 'id' => $analysisfeature[0]->analysisfeature_id), array('type_name' => 'singlet', 'cv_name' => 'tripal'));
        
       if ($unigene_name) {
         $unigene->unigene_name = $unigene_name->value;
