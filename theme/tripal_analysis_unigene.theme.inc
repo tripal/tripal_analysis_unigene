@@ -33,11 +33,11 @@ function tripal_analysis_unigene_preprocess_tripal_organism_unigenes(&$variables
     $num_clusters = tripal_analysis_get_property($analysis_id, 'analysis_unigene_num_clusters');
     $num_singlets = tripal_analysis_get_property($analysis_id, 'analysis_unigene_num_singlets');
 
-    $unigene->unigene_name = $unigene_name->value;
-    $unigene->num_reads = $num_reads->value;
-    $unigene->num_clusters = $num_clusters->value;
-    $unigene->num_contigs = $num_contigs->value;
-    $unigene->num_singlets = $num_singlets->value;
+    $unigene->unigene_name = property_exists($unigene_name, 'value') ? $unigene_name->value : '';
+    $unigene->num_reads = property_exists($num_reads, 'value') ? $num_reads->value : '';
+    $unigene->num_clusters = property_exists($num_clusters, 'value') ? $num_clusters->value : '';
+    $unigene->num_contigs = property_exists($num_contigs, 'value') ? $num_contigs->value : '';
+    $unigene->num_singlets = property_exists($num_singlets, 'value') ? $num_singlets->value : '';
 
     $unigenes[$i++] = $unigene;
   }
