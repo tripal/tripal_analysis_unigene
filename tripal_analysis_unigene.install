@@ -19,7 +19,7 @@ function tripal_analysis_unigene_install() {
    if (db_table_exists('unigene_mview')) {
       $sql = "DROP TABLE unigene_mview";
       chado_query($sql);
-   }  
+   }
 
    tripal_analysis_unigene_add_cvterms();
    tripal_analysis_unigene_add_organism_unigene_mview();
@@ -30,7 +30,7 @@ function tripal_analysis_unigene_install() {
 */
 function tripal_analysis_unigene_add_cvterms() {
    tripal_insert_cvterm(array(
-     'name' => 'unigene_version', 
+     'name' => 'unigene_version',
      'def' => 'The version number for the unigene (e.g. v1, v2, etc...) ',
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
@@ -54,44 +54,44 @@ function tripal_analysis_unigene_add_cvterms() {
      'db_name' => 'tripal',
    ));
    tripal_insert_cvterm(array(
-     'name' => 'analysis_unigene_num_clusters', 
-     'def' => 'The number of clusters in the unigene assembly', 
+     'name' => 'analysis_unigene_num_clusters',
+     'def' => 'The number of clusters in the unigene assembly',
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
    ));
    tripal_insert_cvterm(array(
-     'name' => 'analysis_unigene_num_reads', 
-     'def' => 'The number of reads, after filtering, used as input for the assembly', 
+     'name' => 'analysis_unigene_num_reads',
+     'def' => 'The number of reads, after filtering, used as input for the assembly',
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
    ));
    tripal_insert_cvterm(array(
-     'name' => 'analysis_unigene_avg_length', 
-     'def' => 'The average contig length', 
+     'name' => 'analysis_unigene_avg_length',
+     'def' => 'The average contig length',
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
    ));
    tripal_insert_cvterm(array(
-     'name' => 'singlet', 
+     'name' => 'singlet',
      'def' => "Indicates the feature is a singlet in a ".
        "specific unigene version (e.g. v1, v2, etc...). The value specified ".
-       "should match that of the unigene_version", 
+       "should match that of the unigene_version",
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
    ));
 
-   // Add cveterm 'analysis_unigene_settings' for inserting into analysisprop table   
+   // Add cveterm 'analysis_unigene_settings' for inserting into analysisprop table
    tripal_insert_cvterm(array(
-     'name' => 'analysis_unigene_settings', 
-     'def' => 'Settings of a unigene analysis', 
+     'name' => 'analysis_unigene_settings',
+     'def' => 'Settings of a unigene analysis',
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
    ));
    tripal_insert_cvterm(array(
-      'name' => 'singlet_in_analysis', 
+      'name' => 'singlet_in_analysis',
       'def' => 'Label the feature as a singlet of specified analysis. The value ' .
         'is the name of a unigene analysis. More importantly, '.
-        'the analysis_id of said analysis is inserted to the featureprop table as rank', 
+        'the analysis_id of said analysis is inserted to the featureprop table as rank',
      'cv_name' => 'tripal',
      'db_name' => 'tripal',
    ));
@@ -109,19 +109,19 @@ function tripal_analysis_unigene_add_organism_unigene_mview() {
    if ($mview_id) {
       tripal_delete_mview($mview_id);
    }
-   
+
    $sql =  "
-     SELECT DISTINCT A.analysis_id, O.organism_id 
-     FROM Analysis A 
-       INNER JOIN analysisprop AP    ON AP.analysis_id = A.analysis_id 
-       INNER JOIN cvterm CVT         ON AP.type_id = CVT.cvterm_id 
-       INNER JOIN cv CV              ON CV.cv_id = CVT.cv_id 
-       INNER JOIN analysisfeature AF ON A.analysis_id = AF.analysis_id 
-       INNER JOIN feature F          ON AF.feature_id = F.feature_id 
-       INNER JOIN organism O         ON F.organism_id = O.organism_id 
+     SELECT DISTINCT A.analysis_id, O.organism_id
+     FROM Analysis A
+       INNER JOIN analysisprop AP    ON AP.analysis_id = A.analysis_id
+       INNER JOIN cvterm CVT         ON AP.type_id = CVT.cvterm_id
+       INNER JOIN cv CV              ON CV.cv_id = CVT.cv_id
+       INNER JOIN analysisfeature AF ON A.analysis_id = AF.analysis_id
+       INNER JOIN feature F          ON AF.feature_id = F.feature_id
+       INNER JOIN organism O         ON F.organism_id = O.organism_id
      WHERE CV.name = 'tripal' AND CVT.name='analysis_unigene_name'
    ";
-   
+
   // the schema array for describing this view
   $schema = array(
     'table' => $view_name,
@@ -173,7 +173,7 @@ function tripal_analysis_unigene_uninstall() {
    // Delete module's variables from variables table.
    db_query("DELETE FROM {variable} WHERE name=:name",
             array(':name' => 'tripal_analysis_unigene_setting'));
-   
+
 }
 
 /**
@@ -181,15 +181,16 @@ function tripal_analysis_unigene_uninstall() {
  * Analysis' are enabled before installation
  */
 function tripal_analysis_unigene_requirements($phase) {
-   $requirements = array();
-   if ($phase == 'install') {
-      if (!function_exists('tripal_create_moddir') || !function_exists('tripal_register_analysis_child')) {
-         $requirements ['tripal_analysis_unigene'] = array(
-            'title' => "tripal_analysis_unigene",
-            'value' => "error. Some required modules are just being installed. Please try again.",
-            'severity' => REQUIREMENT_ERROR,
-         );
-      }
-   }
-   return $requirements;
+  $requirements = array();
+  if ($phase == 'install') {
+    // make sure chado is installed
+    if (!$GLOBALS["chado_is_installed"]) {
+      $requirements ['tripal_feature'] = array(
+          'title' => "t ripal_feature",
+          'value' => "ERROR: Chado must be installed before this module can be enabled",
+          'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+  return $requirements;
 }
