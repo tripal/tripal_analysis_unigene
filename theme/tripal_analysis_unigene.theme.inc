@@ -41,7 +41,7 @@ function tripal_analysis_unigene_preprocess_tripal_organism_unigenes(&$variables
 
     $unigenes[$i++] = $unigene;
   }
-   
+  $node->organism->tripal_analysis_unigene = new stdClass(); 
   $node->organism->tripal_analysis_unigene->unigenes = $unigenes;
 }
 
@@ -96,6 +96,6 @@ function tripal_analysis_unigene_preprocess_tripal_feature_unigenes(&$variables)
       $unigenes[$i++] = $unigene;
     }
   }
-
+  $node->feature->tripal_analysis_unigene = new stdClass();
   $node->feature->tripal_analysis_unigene->unigenes = $unigenes;
 }
