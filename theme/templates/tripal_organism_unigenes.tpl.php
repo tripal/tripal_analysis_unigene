@@ -12,7 +12,7 @@ if(count($unigenes) > 0){ ?>
   // Unigene Name row
   foreach ($unigenes AS $unigene) {
     $unigene_name = '';
-    if($unigene->nid){
+    if(isset($unigene->nid)){
       $unigene_name .= "<a href=\"" . url("node/$unigene->nid") . "\">$unigene->unigene_name</a>";
     } 
     else {
