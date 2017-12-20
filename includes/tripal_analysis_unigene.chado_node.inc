@@ -4,8 +4,8 @@
  *  Implementation of hook_node_info();
  */
 function tripal_analysis_unigene_node_info() {
-  $nodes = array();
-  $nodes['chado_analysis_unigene'] = array(
+  $nodes = [];
+  $nodes['chado_analysis_unigene'] = [
     'name' => t('Analysis: Unigene'),
     'base' => 'chado_analysis_unigene',
     'description' => t('A unigene assembly constructed from transcriptomic reads.'),
@@ -14,19 +14,20 @@ function tripal_analysis_unigene_node_info() {
     'has_body' => FALSE,
     'body_label' => t('Unigene Analysis Description'),
     'locked' => TRUE,
-    'chado_node_api' => array(
+    'chado_node_api' => [
       'base_table' => 'analysis',
       'hook_prefix' => 'chado_analysis_unigene',
-      'record_type_title' => array(
+      'record_type_title' => [
         'singular' => t('Unigene Analysis'),
-        'plural' => t('Unigene Analyses')
-      ),
+        'plural' => t('Unigene Analyses'),
+      ],
       // this module will not sync.  that will be handled by the
       // analysis module
-    )
-  );
+    ],
+  ];
   return $nodes;
 }
+
 /*
  *  The following function proves access control for users trying to
  *  perform actions on data managed by this module
@@ -54,6 +55,7 @@ function chado_analysis_unigene_access($op, $node, $account) {
   }
   return NULL;
 }
+
 /**
  *
  */
@@ -74,128 +76,129 @@ function chado_analysis_unigene_form($node, $form_state) {
   $singlet_min_len = '';
   $singlet_max_len = '';
   $singlet_avg_len = '';
-  if (property_exists ( $node, 'analysis' )) {
-    $unigene      = $node->analysis->tripal_analysis_unigene;
+  if (property_exists($node, 'analysis')) {
+    $unigene = $node->analysis->tripal_analysis_unigene;
     $unigene_name = property_exists($unigene, 'unigene_name') ? $unigene->unigene_name : '';
 
-    $num_reads    =  property_exists($unigene, 'num_reads') ? $unigene->num_reads : '';
-    $avg_length   =  property_exists($unigene, 'avg_length') ? $unigene->avg_length : '';
-    $num_clusters =  property_exists($unigene, 'num_clusters') ? $unigene->num_clusters : '';
-    $num_contigs  =  property_exists($unigene, 'num_contigs') ? $unigene->num_contigs : '';
-    $num_singlets =  property_exists($unigene, 'num_singlets') ? $unigene->num_singlets : '';
+    $num_reads = property_exists($unigene, 'num_reads') ? $unigene->num_reads : '';
+    $avg_length = property_exists($unigene, 'avg_length') ? $unigene->avg_length : '';
+    $num_clusters = property_exists($unigene, 'num_clusters') ? $unigene->num_clusters : '';
+    $num_contigs = property_exists($unigene, 'num_contigs') ? $unigene->num_contigs : '';
+    $num_singlets = property_exists($unigene, 'num_singlets') ? $unigene->num_singlets : '';
 
-    $contig_min_len =  property_exists($unigene, 'contig_min_len') ? $unigene->contig_min_len : '';
-    $contig_max_len =  property_exists($unigene, 'contig_max_len') ? $unigene->contig_max_len : '';
-    $contig_avg_len =  property_exists($unigene, 'contig_avg_len') ? $unigene->contig_avg_len : '';
+    $contig_min_len = property_exists($unigene, 'contig_min_len') ? $unigene->contig_min_len : '';
+    $contig_max_len = property_exists($unigene, 'contig_max_len') ? $unigene->contig_max_len : '';
+    $contig_avg_len = property_exists($unigene, 'contig_avg_len') ? $unigene->contig_avg_len : '';
 
-    $singlet_min_len =  property_exists($unigene, 'singlet_min_len') ? $unigene->singlet_min_len : '';
-    $singlet_max_len =  property_exists($unigene, 'singlet_max_len') ? $unigene->singlet_max_len : '';
-    $singlet_avg_len =  property_exists($unigene, 'singlet_avg_len') ? $unigene->singlet_avg_len : '';
+    $singlet_min_len = property_exists($unigene, 'singlet_min_len') ? $unigene->singlet_min_len : '';
+    $singlet_max_len = property_exists($unigene, 'singlet_max_len') ? $unigene->singlet_max_len : '';
+    $singlet_avg_len = property_exists($unigene, 'singlet_avg_len') ? $unigene->singlet_avg_len : '';
   }
-  $form['unigene_name'] = array(
+  $form['unigene_name'] = [
     '#title' => t('Unigene Name'),
     '#type' => 'textfield',
     '#required' => TRUE,
     '#description' => t('A distinct name used to identify this unigene'),
     '#default_value' => $unigene_name,
-  );
-  $form['unigene_stats'] = array(
+  ];
+  $form['unigene_stats'] = [
     '#title' => t('Unigene Stats'),
     '#type' => 'fieldset',
     '#description' => t('Unigene, contig and singlet statistics'),
     '#collapsible' => TRUE,
-  );
-  $form['unigene_stats']['num_reads'] = array(
+  ];
+  $form['unigene_stats']['num_reads'] = [
     '#title' => t('Number of Reads'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the number of reads, after filtering that were used for input into the assembly'),
     '#default_value' => $num_reads,
-  );
-  $form['unigene_stats']['avg_length'] = array(
+  ];
+  $form['unigene_stats']['avg_length'] = [
     '#title' => t('Average Contig Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the average sequence length in the ungiene (average of contigs and signlets).'),
     '#default_value' => $avg_length,
-  );
-  $form['unigene_stats']['num_clusters'] = array(
+  ];
+  $form['unigene_stats']['num_clusters'] = [
     '#title' => t('Number of Clusters'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the number of clusters generated by the asssembly if a clustering mechanism was used for unigene constructions'),
     '#default_value' => $num_clusters,
-  );
-  $form['unigene_stats']['num_contigs'] = array(
+  ];
+  $form['unigene_stats']['num_contigs'] = [
     '#title' => t('Number of Contigs'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the number of contigs generated by the assembly'),
     '#default_value' => $num_contigs,
-  );
-  $form['unigene_stats']['num_singlets'] = array(
+  ];
+  $form['unigene_stats']['num_singlets'] = [
     '#title' => t('Number of Singlets'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the number of singlets remaining in the assembly'),
     '#default_value' => $num_singlets,
-  );
-  $form['contig_stats'] = array(
+  ];
+  $form['contig_stats'] = [
     '#title' => t('Contig Stats'),
     '#type' => 'fieldset',
     '#description' => t('Unigene Contig statistics'),
     '#collapsible' => TRUE,
-  );
-  $form['contig_stats']['contig_min_len'] = array(
+  ];
+  $form['contig_stats']['contig_min_len'] = [
     '#title' => t('Minimum Contig Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the length of the smallest contig'),
     '#default_value' => $contig_min_len,
-  );
-  $form['contig_stats']['contig_max_len'] = array(
+  ];
+  $form['contig_stats']['contig_max_len'] = [
     '#title' => t('Maximum Contig Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the length of the largest contig'),
     '#default_value' => $contig_max_len,
-  );
-  $form['contig_stats']['contig_avg_len'] = array(
+  ];
+  $form['contig_stats']['contig_avg_len'] = [
     '#title' => t('Average Contig Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the average contig length'),
     '#default_value' => $contig_avg_len,
-  );
-  $form['singlet_stats'] = array(
+  ];
+  $form['singlet_stats'] = [
     '#title' => t('Singlet Stats'),
     '#type' => 'fieldset',
     '#description' => t('Unigene Singlet statistics'),
     '#collapsible' => TRUE,
-  );
-  $form['singlet_stats']['singlet_min_len'] = array(
+  ];
+  $form['singlet_stats']['singlet_min_len'] = [
     '#title' => t('Minimum Singlet Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the length of the smallest singlet'),
     '#default_value' => $singlet_min_len,
-  );
-  $form['singlet_stats']['singlet_max_len'] = array(
+  ];
+  $form['singlet_stats']['singlet_max_len'] = [
     '#title' => t('Maximum Singlet Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the length of the largest singlet'),
     '#default_value' => $singlet_max_len,
-  );
-  $form['singlet_stats']['singlet_avg_len'] = array(
+  ];
+  $form['singlet_stats']['singlet_avg_len'] = [
     '#title' => t('Average Singlet Length'),
     '#type' => 'textfield',
     '#required' => FALSE,
     '#description' => t('Provide the average singlet length'),
     '#default_value' => $singlet_avg_len,
-  );
+  ];
   return $form;
 }
+
 /**
  *
  */
@@ -203,27 +206,59 @@ function chado_analysis_unigene_validate($node, &$form, &$form_state) {
   // use the analysis parent to validate the node
   tripal_analysis_validate($node, $form, $form_state);
 }
+
 /**
  *
  */
 function chado_analysis_unigene_insert($node) {
-  
+
   // insert the analysis. If the analysis already exist then this
   // call will link it to a new Drupa node.
   chado_analysis_insert($node);
-  
-  $record = array('table'=> 'analysis', 'id' => $node->analysis_id);
-  $options = array('update_if_present' => TRUE);
-  
-  // add the unigene name as a property of the anslysis
-  chado_insert_property($record, array('type_name' =>'analysis_unigene_name', 'cv_name' => 'tripal', 'value' => trim($node->unigene_name)), $options);
-  chado_insert_property($record, array('type_name' =>'analysis_unigene_num_contigs', 'cv_name' => 'tripal', 'value' => trim ($node->num_contigs)), $options);
-  chado_insert_property($record, array('type_name' =>'analysis_unigene_num_reads', 'cv_name' => 'tripal', 'value' => trim ($node->num_reads)), $options);
-  chado_insert_property($record, array('type_name' =>'analysis_unigene_avg_length', 'cv_name' => 'tripal', 'value' => trim ($node->avg_length)), $options);
-  chado_insert_property($record, array('type_name' =>'analysis_unigene_num_clusters', 'cv_name' => 'tripal', 'value' => trim ($node->num_clusters)), $options);
-  chado_insert_property($record, array('type_name' =>'analysis_unigene_num_singlets', 'cv_name' => 'tripal', 'value' => trim ($node->num_singlets)), $options);
-  
+
+  $record = ['table' => 'analysis', 'id' => $node->analysis_id];
+  $options = ['update_if_present' => TRUE];
+
+  chado_insert_property($record, [
+    'type_name' => 'Analysis Type',
+    'cv_name' => 'analysis_property',
+    'value' => 'tripal_analysis_unigene',
+  ], $options);
+
+  // add the unigene name as a property of the analysis
+  chado_insert_property($record, [
+    'type_name' => 'analysis_unigene_name',
+    'cv_name' => 'tripal',
+    'value' => trim($node->unigene_name),
+  ], $options);
+  chado_insert_property($record, [
+    'type_name' => 'analysis_unigene_num_contigs',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_contigs),
+  ], $options);
+  chado_insert_property($record, [
+    'type_name' => 'analysis_unigene_num_reads',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_reads),
+  ], $options);
+  chado_insert_property($record, [
+    'type_name' => 'analysis_unigene_avg_length',
+    'cv_name' => 'tripal',
+    'value' => trim($node->avg_length),
+  ], $options);
+  chado_insert_property($record, [
+    'type_name' => 'analysis_unigene_num_clusters',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_clusters),
+  ], $options);
+  chado_insert_property($record, [
+    'type_name' => 'analysis_unigene_num_singlets',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_singlets),
+  ], $options);
+
 }
+
 /**
  *
  */
@@ -232,33 +267,61 @@ function chado_analysis_unigene_update($node) {
     // there is no way to handle revisions in Chado but leave
     // this here just to make not we've addressed it.
   }
-  
-  $record = array('table'=> 'analysis', 'id' => $node->analysis_id);
-  $options = array('insert_if_missing' => TRUE);
+
+  $record = ['table' => 'analysis', 'id' => $node->analysis_id];
+  $options = ['insert_if_missing' => TRUE];
 
   chado_analysis_update($node);
-  chado_update_property($record, array('type_name' =>'analysis_unigene_name',  'cv_name' => 'tripal', 'value' => trim($node->unigene_name)), $options);
-  chado_update_property($record, array('type_name' =>'analysis_unigene_num_contigs',  'cv_name' => 'tripal', 'value' => trim($node->num_contigs)), $options);
-  chado_update_property($record, array('type_name' =>'analysis_unigene_num_reads',  'cv_name' => 'tripal', 'value' => trim($node->num_reads)), $options);
-  chado_update_property($record, array('type_name' =>'analysis_unigene_avg_length',  'cv_name' => 'tripal', 'value' => trim($node->avg_length)), $options);
-  chado_update_property($record, array('type_name' =>'analysis_unigene_num_clusters',  'cv_name' => 'tripal', 'value' => trim($node->num_clusters)), $options);
-  chado_update_property($record, array('type_name' =>'analysis_unigene_num_singlets',  'cv_name' => 'tripal', 'value' => trim($node->num_singlets)), $options);
-  
+  chado_update_property($record, [
+    'type_name' => 'analysis_unigene_name',
+    'cv_name' => 'tripal',
+    'value' => trim($node->unigene_name),
+  ], $options);
+  chado_update_property($record, [
+    'type_name' => 'analysis_unigene_num_contigs',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_contigs),
+  ], $options);
+  chado_update_property($record, [
+    'type_name' => 'analysis_unigene_num_reads',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_reads),
+  ], $options);
+  chado_update_property($record, [
+    'type_name' => 'analysis_unigene_avg_length',
+    'cv_name' => 'tripal',
+    'value' => trim($node->avg_length),
+  ], $options);
+  chado_update_property($record, [
+    'type_name' => 'analysis_unigene_num_clusters',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_clusters),
+  ], $options);
+  chado_update_property($record, [
+    'type_name' => 'analysis_unigene_num_singlets',
+    'cv_name' => 'tripal',
+    'value' => trim($node->num_singlets),
+  ], $options);
+
 }
+
 /**
  *
  */
 function chado_analysis_unigene_delete($node) {
   chado_analysis_delete($node);
 }
+
 /**
  *
  */
 function chado_analysis_unigene_view($node, $teaser = FALSE, $page = FALSE) {
   // use drupal's default node view:
   //$node = node_prepare($node, $teaser);
+  
   return $node;
 }
+
 /**
  *
  */
@@ -266,21 +329,21 @@ function chado_analysis_unigene_load($nodes) {
 
   // load the default set of analysis fields
   chado_analysis_load($nodes);
-  foreach ( $nodes as $nid => $node ) {
+  foreach ($nodes as $nid => $node) {
     // create some variables for easier lookup
     $analysis = $node->analysis;
     $analysis_id = $analysis->analysis_id;
-    
-    $record = array('table' => 'analysis', 'id' => $analysis_id);
-    
+
+    $record = ['table' => 'analysis', 'id' => $analysis_id];
+
     // add in the properties
-    $unigene_name = chado_get_property($record, array('type_name' => 'analysis_unigene_name'));
-    $num_contigs = chado_get_property($record, array('type_name' => 'analysis_unigene_num_contigs'));
-    $num_reads = chado_get_property($record, array('type_name' => 'analysis_unigene_num_reads'));
-    $avg_length = chado_get_property($record, array('type_name' => 'analysis_unigene_avg_length'));
-    $num_clusters = chado_get_property($record, array('type_name' => 'analysis_unigene_num_clusters'));
-    $num_singlets = chado_get_property($record, array('type_name' => 'analysis_unigene_num_singlets'));
-    
+    $unigene_name = chado_get_property($record, ['type_name' => 'analysis_unigene_name']);
+    $num_contigs = chado_get_property($record, ['type_name' => 'analysis_unigene_num_contigs']);
+    $num_reads = chado_get_property($record, ['type_name' => 'analysis_unigene_num_reads']);
+    $avg_length = chado_get_property($record, ['type_name' => 'analysis_unigene_avg_length']);
+    $num_clusters = chado_get_property($record, ['type_name' => 'analysis_unigene_num_clusters']);
+    $num_singlets = chado_get_property($record, ['type_name' => 'analysis_unigene_num_singlets']);
+
     $analysis->tripal_analysis_unigene = new stdClass();
     $analysis->tripal_analysis_unigene->unigene_name = is_object($unigene_name) ? $unigene_name->value : '';
     $analysis->tripal_analysis_unigene->num_contigs = is_object($num_contigs) ? $num_contigs->value : '';
@@ -288,21 +351,21 @@ function chado_analysis_unigene_load($nodes) {
     $analysis->tripal_analysis_unigene->avg_length = is_object($avg_length) ? $avg_length->value : '';
     $analysis->tripal_analysis_unigene->num_clusters = is_object($num_clusters) ? $num_clusters->value : '';
     $analysis->tripal_analysis_unigene->num_singlets = is_object($num_singlets) ? $num_singlets->value : '';
-    
+
     // add in organism information using the materialized view
     $sql = "SELECT * FROM {organism_unigene_mview} OUM " . "  INNER JOIN {organism} O on OUM.organism_id = O.organism_id " . "WHERE OUM.analysis_id = :analysis_id " . "ORDER BY O.genus, O.species";
-    $organisms = chado_query($sql, array(':analysis_id' => $analysis_id));
-    
+    $organisms = chado_query($sql, [':analysis_id' => $analysis_id]);
+
     while ($organism = $organisms->fetchObject()) {
       $sql = "SELECT nid FROM {chado_organism} WHERE organism_id = :organism_id";
-      $c_org = db_query($sql, array(':organism_id' => $organism->organism_id))->fetchObject();
+      $c_org = db_query($sql, [':organism_id' => $organism->organism_id])->fetchObject();
       $organism->nid = $c_org->nid;
       $analysis->tripal_analysis_unigene->organisms[] = $organism;
     }
-    
+
     // Now get the title
     $node->title = chado_get_node_title($node);
-    
+
     $nodes[$nid]->analysis = $analysis;
   }
 }
@@ -316,26 +379,26 @@ function tripal_analysis_unigene_node_view($node, $view_mode, $langcode) {
   switch ($node->type) {
     case 'chado_analysis_unigene' :
       if ($view_mode == 'full') {
-        $node->content ['tripal_analysis_unigene_base'] = array(
-          '#markup' => theme ('tripal_analysis_unigene_base', array('node' => $node)),
+        $node->content ['tripal_analysis_unigene_base'] = [
+          '#markup' => theme('tripal_analysis_unigene_base', ['node' => $node]),
           '#tripal_toc_id' => 'base',
           '#tripal_toc_title' => 'Overview',
-          '#weight' => - 100 
-        );
+          '#weight' => -100,
+        ];
       }
       if ($view_mode == 'teaser') {
-        $node->content ['tripal_analysis_unigene_teaser'] = array(
-          '#markup' => theme ('tripal_analysis_unigene_teaser', array('node' => $node)) 
-        );
+        $node->content ['tripal_analysis_unigene_teaser'] = [
+          '#markup' => theme('tripal_analysis_unigene_teaser', ['node' => $node]),
+        ];
       }
       break;
     case 'chado_feature' :
       if ($view_mode == 'full') {
-        $node->content ['tripal_feature_unigenes'] = array(
-          '#markup' => theme('tripal_feature_unigenes', array('node' => $node)),
+        $node->content ['tripal_feature_unigenes'] = [
+          '#markup' => theme('tripal_feature_unigenes', ['node' => $node]),
           '#tripal_toc_id' => 'unigene',
-          '#tripal_toc_title' => 'Unigene' 
-        );
+          '#tripal_toc_title' => 'Unigene',
+        ];
       }
       break;
     case 'chado_organism' :
@@ -343,18 +406,19 @@ function tripal_analysis_unigene_node_view($node, $view_mode, $langcode) {
         $organism = $node->organism;
         // check if this organism has a unigene, if so then add the content
         $sql = "SELECT * FROM {organism_unigene_mview} " . "WHERE organism_id = :organism_id ";
-        $results = chado_query ( $sql, array(':organism_id' => $organism->organism_id))->fetchObject();
+        $results = chado_query($sql, [':organism_id' => $organism->organism_id])->fetchObject();
         if ($results) {
-          $node->content ['tripal_organism_unigenes'] = array(
-            '#markup' => theme ( 'tripal_organism_unigenes', array('node' => $node)),
+          $node->content ['tripal_organism_unigenes'] = [
+            '#markup' => theme('tripal_organism_unigenes', ['node' => $node]),
             '#tripal_toc_id' => 'unigene',
-            '#tripal_toc_title' => 'Unigene' 
-          );
+            '#tripal_toc_title' => 'Unigene',
+          ];
         }
       }
       break;
   }
 }
+
 /**
  * Implements [content_type]_chado_node_default_title_format().
  *
@@ -378,13 +442,13 @@ function tripal_analysis_unigene_node_insert($node) {
 
       // build the analysis variable
       $analysis_id = chado_get_id_from_nid('analysis', $node->nid);
-      $values = array('analysis_id' => $analysis_id);
+      $values = ['analysis_id' => $analysis_id];
       $analysis = chado_generate_var('analysis', $values);
       $node->analysis = $analysis;
 
       // Now get the title
       $node->title = chado_get_node_title($node);
-      
+
       // Now use the API to set the path.
       chado_set_node_url($node);
 
@@ -405,7 +469,7 @@ function tripal_analysis_unigene_node_update($node) {
 
       // build the analysis variable
       $analysis_id = chado_get_id_from_nid('analysis', $node->nid);
-      $values = array('analysis_id' => $analysis_id);
+      $values = ['analysis_id' => $analysis_id];
       $analysis = chado_generate_var('analysis', $values);
       $node->analysis = $analysis;
 
