@@ -30,6 +30,8 @@ function tripal_analysis_unigene_install() {
 *
 */
 function tripal_analysis_unigene_add_cvterms() {
+
+
    tripal_insert_cvterm(array(
      'name' => 'unigene_version',
      'def' => 'The version number for the unigene (e.g. v1, v2, etc...) ',
@@ -197,4 +199,32 @@ function tripal_analysis_unigene_requirements($phase) {
     }
   }
   return $requirements;
+}
+
+/**
+ * Insert the analysis type prop for all existing analysis_unigene analyses
+ *
+ */
+function tripal_analysis_unigene_update_7200(){
+  $sql = "
+     SELECT DISTINCT A.analysis_id, CVT.name
+     FROM {analysis} A
+       INNER JOIN {analysisprop} AP    ON AP.analysis_id = A.analysis_id
+     INNER JOIN {cvterm} CVT         ON AP.type_id = CVT.cvterm_id
+       INNER JOIN {cv} CV              ON CV.cv_id = CVT.cv_id
+     WHERE CV.name = 'tripal' AND CVT.name='analysis_unigene_name'
+   ";
+
+  $results = chado_query($sql)->fetchAll();
+  $options = ['update_if_present' => TRUE];
+  foreach ($results as $result) {
+    $record_id = $result->analysis_id;
+
+    chado_insert_property(['table' => 'analysis', 'id' => $record_id], [
+      'type_name' => 'Analysis Type',
+      'cv_name' => 'analysis_property',
+      'value' => 'tripal_analysis_unigene',
+    ], $options);
+  }
+
 }
